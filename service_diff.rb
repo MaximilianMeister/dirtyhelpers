@@ -19,7 +19,10 @@ while true
       diff = `diff #{new_state} #{old_state} | grep ">" | cut -d" " -f2`
       puts "service(s) #{diff} changed..." 
       unless diff.empty?
-        File.open(state_diff,"w") {|m| m.puts(diff)}
+        File.open(state_diff,"a") do |m| 
+          m.puts(Time.now)
+          m.puts(diff)
+        end
       end
       File.open(old_state,"w") do |f|
         services.each {|s| f.puts s}
