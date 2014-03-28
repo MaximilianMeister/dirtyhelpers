@@ -9,17 +9,19 @@ while true
   if File.exists?(old_state)
     old = File.open(old_state,"r").to_a
     unless old == services
-      puts "something changed..."
-      puts "writing new chkconfig..."
       File.open(new_state,"w") do |n|
         services.each {|s| n.puts s}
       end
       # now diff
-      puts "diffing..."
-      diff = `diff #{new_state} #{old_state} | grep ">" | cut -d" " -f2`
-      puts "service(s) #{diff} changed..." 
+      diff = services - old
+      #diff = `diff #{new_state} #{old_state} | grep ">" | cut -d" " -f2`
+      puts "-------------------------------------"
+      puts "service(s) changed..."
+      puts "#####################################"
+      puts diff
+      puts "#####################################"
       unless diff.empty?
-        File.open(state_diff,"a") do |m| 
+        File.open(state_diff,"a") do |m|
           m.puts(Time.now)
           m.puts(diff)
         end
@@ -29,6 +31,7 @@ while true
       end
     end
   else
+    puts "-------------------------------------"
     puts "writing initial chkconfig..."
     File.open(old_state,"w") do |f|
       services.each {|s| f.puts s}
