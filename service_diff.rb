@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require 'ftools'
+
 old_state = "/tmp/service_old"
 new_state = "/tmp/service_new"
 state_diff = "/tmp/service_diff"
@@ -15,6 +17,7 @@ while true
       # now diff
       diff = services - old
       #diff = `diff #{new_state} #{old_state} | grep ">" | cut -d" " -f2`
+      diff.each {|d| d.gsub!(/\s.+/, '')}
       puts "-------------------------------------"
       puts "service(s) changed..."
       puts "#####################################"
@@ -26,9 +29,7 @@ while true
           m.puts(diff)
         end
       end
-      File.open(old_state,"w") do |f|
-        services.each {|s| f.puts s}
-      end
+      File.copy(new_state, old_state)
     end
   else
     puts "-------------------------------------"
