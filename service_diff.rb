@@ -3,8 +3,8 @@
 require 'ftools'
 
 addremove = case ARGV[0]
-when 'add' then 1
-when 'remove' then -1
+when 'add' then true
+when 'remove' then false
 else abort("add or remove argument required")
 end 
 
@@ -20,26 +20,23 @@ while true
       File.open(new_state,"w") do |n|
         services.each {|s| n.puts s}
       end
-      # now diff
-      diff = case addremove
-             when 1 then services - old
-             when -1 then old - services
-             end
-      #diff = `diff #{new_state} #{old_state} | grep ">" | cut -d" " -f2`
-      diff.each {|d| d.gsub!(/\s.+/, '')}
+      diff_raw = addremove ? services-old : old-services
+      diff = []
+      diff_raw.each {|d| diff << Hash[*d.split]}
       puts "-------------------------------------"
-      if addremove == -1
-        puts "service(s) removed..."
-      elsif addremove == 1
-        puts "service(s) added..."
-      end  
+      action = addremove ? "added" : "removed"
+      puts "service(s) #{action}"
       puts "#####################################"
-      puts diff
+      diff.each do |d|
+        print "#{d.keys} => "
+        state = d.value?("on") ? "on" : "off"
+        puts state
+      end
       puts "#####################################"
       unless diff.empty?
-        File.open(state_diff,"a") do |m|
-          m.puts(Time.now)
-          m.puts(diff)
+        File.open(state_diff,"a") do |f|
+          f.puts(Time.now)
+          diff.each {|d| f.puts "#{d.keys} => #{d.values}"}
         end
       end
       File.copy(new_state, old_state)
