@@ -1,0 +1,34 @@
+#!/bin/bash
+
+GITHOST="$1.suse.de"
+BARCLAMP=$2
+DEST_FOLDER=$3
+VM_BASE=/opt/dell/chef
+GIT_BASE=/home/cloud/barclamp-$BARCLAMP/chef
+
+if [ $# -ne 3 ]
+then
+  echo "usage: $0 githost barclamp folder"
+  exit 0
+fi
+
+case $DEST_FOLDER in
+  'a'|'attr'|'attributes')
+    DIR=cookbooks/$BARCLAMP/attributes
+    SRC=$GIT_BASE/$DIR
+    DEST=$VM_BASE/$DIR
+  ;;
+  're'|'recipes')
+    DIR=cookbooks/$BARCLAMP/recipes
+    SRC=$GIT_BASE/$DIR
+    DEST=$VM_BASE/$DIR
+  ;;
+  'ro'|'roles')
+    DIR=roles
+    SRC=$GIT_BASE/$DIR
+    DEST=$VM_BASE/$DIR
+  ;;
+esac
+
+echo "rsync -v --ignore-existing -e ssh root@$GITHOST:$SRC/ $DEST"
+exit 0
