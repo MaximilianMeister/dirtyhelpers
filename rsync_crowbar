@@ -22,7 +22,14 @@ case $DEST_FOLDER in
     DIR=cookbooks/$BARCLAMP/attributes
     SRC=$GIT_BASE/$DIR
     DEST=$VM_BASE/$DIR
-    FILES=services.rb
+    ssh root@$GITHOST ls $GIT_BASE/$DIR/services.rb
+    if [ $? -eq 0 ]
+    then
+      FILES=services.rb
+    else
+      echo "check for attributes file manually. exit..."
+      exit 0
+    fi
   ;;
   're'|'recipes')
     DIR=cookbooks/$BARCLAMP/recipes
@@ -54,5 +61,5 @@ then
 fi
 
 echo "rsync -v --ignore-existing -e ssh root@$GITHOST:$SRC/$FILES $DEST"
-rsync -v --ignore-existing -e ssh root@$GITHOST:$SRC/$FILES $DEST
+#rsync -v --ignore-existing -e ssh root@$GITHOST:$SRC/$FILES $DEST
 exit 0
