@@ -3,6 +3,7 @@
 GITHOST="$1.suse.de"
 BARCLAMP=$2
 DEST_FOLDER=$3
+UPLOAD=$4
 VM_BASE=/opt/dell/chef
 GIT_BASE=/home/cloud/barclamp-$BARCLAMP/chef
 ALL=('attributes' 'recipes' 'roles')
@@ -11,7 +12,7 @@ function usage {
   echo "usage: $0 githost barclamp folder"
 }
 
-if [ $# -ne 3 ]
+if [ $# -lt 3 ] || [ $# -gt 4 ]
 then
   usage $0
   exit 0
@@ -22,7 +23,7 @@ case $DEST_FOLDER in
     DIR=cookbooks/$BARCLAMP/attributes
     SRC=$GIT_BASE/$DIR
     DEST=$VM_BASE/$DIR
-    ssh root@$GITHOST ls $GIT_BASE/$DIR/services.rb
+    ssh root@$GITHOST ls $GIT_BASE/$DIR/services.rb > /dev/null
     if [ $? -eq 0 ]
     then
       FILES=services.rb
@@ -46,7 +47,7 @@ case $DEST_FOLDER in
   'all')
     for i in "${ALL[@]}"
     do
-      bash $0 $1 $2 $i
+      bash $0 $1 $2 $i $4
     done
   ;;
   *)
@@ -62,4 +63,19 @@ fi
 
 #echo "rsync -v --ignore-existing -e ssh root@$GITHOST:$SRC/$FILES $DEST"
 rsync -v --ignore-existing -e ssh root@$GITHOST:$SRC/$FILES $DEST
+
+#upload cookbook and role
+case $UPLOAD in
+  'upload'|'up')
+    echo "uploading cookbook $BARCLAMP"
+    knife cookbook upload -o $VM_BASE/cookbooks $BARCLAMP
+    echo "uploading role $BARCLAMP"
+    knife role from file $VM_BASE/roles/$BARCLAMP*_remove.rb
+  ;;
+  *)
+    echo "not uploading cookbooks and roles"
+    exit 0
+  ;;
+esac
+
 exit 0
