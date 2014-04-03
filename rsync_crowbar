@@ -60,6 +60,6 @@ then
   exit 0
 fi
 
-echo "rsync -v --ignore-existing -e ssh root@$GITHOST:$SRC/$FILES $DEST"
-#rsync -v --ignore-existing -e ssh root@$GITHOST:$SRC/$FILES $DEST
+#echo "rsync -v --ignore-existing -e ssh root@$GITHOST:$SRC/$FILES $DEST"
+rsync -v --ignore-existing -e ssh root@$GITHOST:$SRC/$FILES $DEST
 exit 0
