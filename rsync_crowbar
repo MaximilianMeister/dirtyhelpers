@@ -5,10 +5,15 @@ BARCLAMP=$2
 DEST_FOLDER=$3
 VM_BASE=/opt/dell/chef
 GIT_BASE=/home/cloud/barclamp-$BARCLAMP/chef
+ALL=('attributes' 'recipes' 'roles')
+
+function usage {
+  echo "usage: $0 githost barclamp folder"
+}
 
 if [ $# -ne 3 ]
 then
-  echo "usage: $0 githost barclamp folder"
+  usage $0
   exit 0
 fi
 
@@ -17,18 +22,37 @@ case $DEST_FOLDER in
     DIR=cookbooks/$BARCLAMP/attributes
     SRC=$GIT_BASE/$DIR
     DEST=$VM_BASE/$DIR
+    FILES=services.rb
   ;;
   're'|'recipes')
     DIR=cookbooks/$BARCLAMP/recipes
     SRC=$GIT_BASE/$DIR
     DEST=$VM_BASE/$DIR
+    FILES=deactivate*.rb
   ;;
   'ro'|'roles')
     DIR=roles
     SRC=$GIT_BASE/$DIR
     DEST=$VM_BASE/$DIR
+    FILES=$BARCLAMP*_remove.rb
+  ;;
+  'all')
+    for i in "${ALL[@]}"
+    do
+      bash $0 $1 $2 $i
+    done
+  ;;
+  *)
+   usage $0
+   exit 0
   ;;
 esac
 
-echo "rsync -v --ignore-existing -e ssh root@$GITHOST:$SRC/ $DEST"
+if [ -z "$SRC" ]
+then
+  exit 0
+fi
+
+echo "rsync -v --ignore-existing -e ssh root@$GITHOST:$SRC/$FILES $DEST"
+rsync -v --ignore-existing -e ssh root@$GITHOST:$SRC/$FILES $DEST
 exit 0
