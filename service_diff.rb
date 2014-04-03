@@ -2,6 +2,12 @@
 
 require 'ftools'
 
+addremove = case ARGV[0]
+when 'add' then 1
+when 'remove' then -1
+else abort("add or remove argument required")
+end 
+
 old_state = "/tmp/service_old"
 new_state = "/tmp/service_new"
 state_diff = "/tmp/service_diff"
@@ -15,11 +21,18 @@ while true
         services.each {|s| n.puts s}
       end
       # now diff
-      diff = services - old
+      diff = case addremove
+             when 1 then services - old
+             when -1 then old - services
+             end
       #diff = `diff #{new_state} #{old_state} | grep ">" | cut -d" " -f2`
       diff.each {|d| d.gsub!(/\s.+/, '')}
       puts "-------------------------------------"
-      puts "service(s) changed..."
+      if addremove == -1
+        puts "service(s) removed..."
+      elsif addremove == 1
+        puts "service(s) added..."
+      end  
       puts "#####################################"
       puts diff
       puts "#####################################"
