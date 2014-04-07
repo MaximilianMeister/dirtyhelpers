@@ -9,7 +9,7 @@ GIT_BASE=/home/cloud/barclamp-$BARCLAMP/chef
 ALL=('attributes' 'recipes' 'roles')
 
 function usage {
-  echo "usage: $0 githost barclamp folder"
+  echo "usage: $0 githost barclamp folder [upload]"
 }
 
 if [ $# -lt 3 ] || [ $# -gt 4 ]
