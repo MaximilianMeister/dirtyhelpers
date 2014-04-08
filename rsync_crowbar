@@ -44,7 +44,7 @@ case $DEST_FOLDER in
         rsync -v -e ssh root@$GITHOST:$GIT_BASE$re $VM_BASE/cookbooks/$BARCLAMP/recipes
         continue
       else
-        echo "rsync -v -e ssh root@$GITHOST:$GIT_BASE$re $VM_BASE$re"
+        rsync -v -e ssh root@$GITHOST:$GIT_BASE$re $VM_BASE$re
       fi
     done
   ;;
