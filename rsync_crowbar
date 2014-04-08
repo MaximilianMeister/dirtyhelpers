@@ -24,7 +24,12 @@ case $DEST_FOLDER in
     case $BARCLAMP in
       'database')
         for a in $SERVICE_PATH; do
-          rsync -v -e ssh root@$GITHOST:$GIT_BASE$a $VM_BASE$a
+          if [[ $a == *mysql* ]]
+          then 
+            continue
+          else
+            rsync -v -e ssh root@$GITHOST:$GIT_BASE$a $VM_BASE/cookbooks/$BARCLAMP/attributes
+          fi
         done
       ;;
       *)
@@ -34,6 +39,13 @@ case $DEST_FOLDER in
   're'|'recipes')
     RECIPE_PATH=$(ssh root@$GITHOST "cd $GIT_BASE; find . -name deactivate*.rb | sed 's/^.//'")
     for re in $RECIPE_PATH; do
+      if [[ $BARCLAMP == "database" ]] && [[ $re != *mysql* ]]
+      then
+        rsync -v -e ssh root@$GITHOST:$GIT_BASE$re $VM_BASE/cookbooks/$BARCLAMP/recipes
+        continue
+      else
+        continue
+      fi
       rsync -v -e ssh root@$GITHOST:$GIT_BASE$re $VM_BASE$re
     done
   ;;
