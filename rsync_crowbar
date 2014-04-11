@@ -41,29 +41,39 @@ fi
 #            /opt/dell/chef/roles
 case $DEST_FOLDER in
   'a'|'attr'|'attributes')
-    DIR=cookbooks/$BARCLAMP/attributes
-    SRC=$GIT_BASE/$DIR
-    DEST=$VM_BASE/$DIR
-    ssh root@$GITHOST ls $GIT_BASE/$DIR/services.rb > /dev/null
-    if [ $? -eq 0 ]
-    then
-      FILES=services.rb
-    else
-      echo "check for attributes file manually. exit..."
-      exit 0
-    fi
+    SERVICE_PATH=$(ssh root@$GITHOST "cd $GIT_BASE; find . -name services.rb | sed 's/^.//'")
+    case $BARCLAMP in
+      'database')
+        for a in $SERVICE_PATH; do
+          if [[ $a == *mysql* ]]
+          then 
+            continue
+          else
+            rsync -v -e ssh root@$GITHOST:$GIT_BASE$a $VM_BASE/cookbooks/$BARCLAMP/attributes
+          fi
+        done
+      ;;
+      *)
+        rsync -v -e ssh root@$GITHOST:$GIT_BASE$SERVICE_PATH $VM_BASE$SERVICE_PATH
+    esac
   ;;
   're'|'recipes')
-    DIR=cookbooks/$BARCLAMP/recipes
-    SRC=$GIT_BASE/$DIR
-    DEST=$VM_BASE/$DIR
-    FILES=deactivate*.rb
+    RECIPE_PATH=$(ssh root@$GITHOST "cd $GIT_BASE; find . -name deactivate*.rb | sed 's/^.//'")
+    for re in $RECIPE_PATH; do
+      if [[ $BARCLAMP == "database" ]] && [[ $re != *mysql* ]]
+      then
+        rsync -v -e ssh root@$GITHOST:$GIT_BASE$re $VM_BASE/cookbooks/$BARCLAMP/recipes
+        continue
+      else
+        rsync -v -e ssh root@$GITHOST:$GIT_BASE$re $VM_BASE$re
+      fi
+    done
   ;;
   'ro'|'roles')
-    DIR=roles
-    SRC=$GIT_BASE/$DIR
-    DEST=$VM_BASE/$DIR
-    FILES=$BARCLAMP*_remove.rb
+    ROLE_PATH=$(ssh root@$GITHOST "cd $GIT_BASE; find . -name $BARCLAMP*_remove.rb | sed 's/^.//'")
+    for ro in $ROLE_PATH; do
+      rsync -v -e ssh root@$GITHOST:$GIT_BASE$ro $VM_BASE$ro
+    done
   ;;
   'all')
     for i in "${ALL[@]}"
@@ -76,14 +86,6 @@ case $DEST_FOLDER in
    exit 0
   ;;
 esac
-
-if [ -z "$SRC" ]
-then
-  exit 0
-fi
-
-#echo "rsync -v --ignore-existing -e ssh root@$GITHOST:$SRC/$FILES $DEST"
-rsync -v --ignore-existing -e ssh root@$GITHOST:$SRC/$FILES $DEST
 
 #upload cookbook and role
 case $UPLOAD in
