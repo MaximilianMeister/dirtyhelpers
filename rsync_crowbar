@@ -14,10 +14,17 @@ BCS=(database keystone rabbitmq ceph swift glance cinder neutron nova nova_dashb
 
 function usage {
   echo "usage: $0 githost barclamp folder [upload]"
+  echo "or:    $0 githost nuke (deploy all barclamps)"
 }
 
+if [ ! -d "/opt/dell" ]
+then
+  echo "Not on a crowbar admin node"
+  exit 1
+fi
+
 # deploy all barclamps to admin node
-if [ $2 == "nuke" ]
+if [ "$2" == "nuke" ]
 then
   for bc in "${BCS[@]}"
   do
