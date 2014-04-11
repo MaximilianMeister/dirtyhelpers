@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# sync barclamps from local git checkout to the crobar admin node
+#
 
 GITHOST="$1.suse.de"
 BARCLAMP=$2
@@ -6,11 +9,25 @@ DEST_FOLDER=$3
 UPLOAD=$4
 VM_BASE=/opt/dell/chef
 GIT_BASE=/home/cloud/barclamp-$BARCLAMP/chef
-ALL=('attributes' 'recipes' 'roles')
+ALL=(attributes recipes roles)
+BCS=(database keystone rabbitmq ceph swift glance cinder neutron nova nova_dashboard ceilometer heat)
 
 function usage {
   echo "usage: $0 githost barclamp folder [upload]"
 }
+
+# deploy all barclamps to admin node
+if [ $2 == "nuke" ]
+then
+  for bc in "${BCS[@]}"
+  do
+    for folder in "${ALL[@]}"
+    do
+      bash $0 $1 $bc $folder "up"
+    done
+  done
+  exit 0
+fi
 
 if [ $# -lt 3 ] || [ $# -gt 4 ]
 then
@@ -18,6 +35,10 @@ then
   exit 0
 fi
 
+# check which folder needs to be synced
+# there are: /opt/dell/chef/cookbooks/$BC/attributes
+#            /opt/dell/chef/cookbooks/$BC/recipes
+#            /opt/dell/chef/roles
 case $DEST_FOLDER in
   'a'|'attr'|'attributes')
     DIR=cookbooks/$BARCLAMP/attributes
