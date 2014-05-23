@@ -8,7 +8,7 @@ BARCLAMP=$2
 DEST_FOLDER=$3
 UPLOAD=$4
 VM_BASE=/opt/dell/chef
-GIT_BASE=/home/cloud/barclamp-$BARCLAMP/chef
+GIT_BASE=/home/cloud/SUSE-Cloud/barclamp-$BARCLAMP/chef
 ALL=(attributes recipes roles)
 BCS=(database keystone rabbitmq ceph swift glance cinder neutron nova nova_dashboard ceilometer heat)
 
