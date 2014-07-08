@@ -8,7 +8,7 @@ BARCLAMP=$2
 DEST_FOLDER=$3
 UPLOAD=$4
 VM_BASE=/opt/dell/chef
-GIT_BASE=/home/cloud/SUSE-Cloud/barclamp-$BARCLAMP/chef
+GIT_BASE=/home/cloud/MaximilianMeister/barclamp-$BARCLAMP/chef
 ALL=(attributes recipes roles)
 BCS=(database keystone rabbitmq ceph swift glance cinder neutron nova nova_dashboard ceilometer heat)
 
@@ -48,7 +48,7 @@ fi
 #            /opt/dell/chef/roles
 case $DEST_FOLDER in
   'a'|'attr'|'attributes')
-    SERVICE_PATH=$(ssh root@$GITHOST "cd $GIT_BASE; find . -name services.rb | sed 's/^.//'")
+    SERVICE_PATH=$(ssh root@$GITHOST "cd $GIT_BASE; find . -name default.rb | grep attributes | sed 's/^.//'")
     case $BARCLAMP in
       'database')
         for a in $SERVICE_PATH; do
@@ -81,6 +81,26 @@ case $DEST_FOLDER in
     for ro in $ROLE_PATH; do
       rsync -v -e ssh root@$GITHOST:$GIT_BASE$ro $VM_BASE$ro
     done
+  ;;
+  'lwrp')
+    LWRP_PATH=$(ssh root@$GITHOST "cd $GIT_BASE; find . -name role.rb | sed 's/^.//'")
+    RESOURCE_DIR=/cookbooks/barclamp/resources
+    PROVIDE_DIR=/cookbooks/barclamp/providers
+    if [ ! -d $VM_BASE$RESOURCE_DIR ]
+    then
+      mkdir $VM_BASE$RESOURCE_DIR
+      mkdir $VM_BASE$PROVIDE_DIR
+    fi
+    for lwrp in $LWRP_PATH; do
+      rsync -v -e ssh root@$GITHOST:$GIT_BASE$lwrp $VM_BASE$lwrp
+    done
+    BARCLAMP="barclamp"
+  ;;
+  'databag')
+    BAG_PATH=$(ssh root@$GITHOST "cd $GIT_BASE; find . -name bc-template-$BARCLAMP.json | sed 's/^.//'")
+    MIGRATION_PATH=$(ssh root@$GITHOST "cd $GIT_BASE; find . -name 011_change_role_removal_priority.rb | sed 's/^.//'")
+    rsync -v -e ssh root@$GITHOST:$GIT_BASE$BAG_PATH $VM_BASE$BAG_PATH
+    rsync -v -e ssh root@$GITHOST:$GIT_BASE$MIGRATION_PATH $VM_BASE$MIGRATION_PATH
   ;;
   'all')
     for i in "${ALL[@]}"
