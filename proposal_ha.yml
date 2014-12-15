@@ -1,0 +1,74 @@
+---
+proposals:
+- barclamp: pacemaker
+  name: cluster
+  deployment: 
+    elements: 
+      hawk-server: []
+      pacemaker-cluster-member: []
+- barclamp: database
+  deployment: 
+    elements: 
+      database-server: 
+      - ~
+- barclamp: rabbitmq
+  deployment: 
+    elements: 
+      rabbitmq-server: 
+      - ~
+- barclamp: keystone
+  deployment: 
+    elements: 
+      keystone-server: 
+      - ~
+- barclamp: glance
+  deployment: 
+    elements: 
+      glance-server: 
+      - ~
+- barclamp: cinder
+  deployment: 
+    elements: 
+      cinder-volume: 
+      - ~
+      cinder-controller: 
+      - ~
+- barclamp: neutron
+  deployment: 
+    elements: 
+      neutron-server: 
+      - ~
+      neutron-l3: 
+      - ~
+- barclamp: nova
+  deployment: 
+    elements: 
+      nova-multi-compute-qemu: []
+      nova-multi-compute-hyperv: []
+      nova-multi-controller: []
+      nova-multi-compute-kvm: []
+      nova-multi-compute-xen: []
+- barclamp: nova_dashboard
+  deployment:
+    elements:
+      nova_dashboard-server:
+      - ~
+- barclamp: heat
+  deployment:
+    elements:
+      heat-server:
+      - ~
+- barclamp: ceilometer
+  deployment:
+    elements:
+      ceilometer-agent: []
+      ceilometer-server:
+      - ~
+      ceilometer-swift-proxy-middleware: []
+      ceilometer-cagent:
+      - ~
+- barclamp: trove
+  deployment:
+    elements:
+      trove-server:
+      - ~
