@@ -1,0 +1,194 @@
+---
+proposals:
+- barclamp: pacemaker
+  name: cluster
+  attributes: 
+    stonith: 
+      mode: libvirt
+      libvirt: 
+        hypervisor_ip: 10.122.191.4
+      sbd: 
+        nodes: 
+          d52-54-02-77-77-02.v7.cloud.suse.de: 
+            devices: 
+            - ""
+          d52-54-03-77-77-03.v7.cloud.suse.de: 
+            devices: 
+            - ""
+          d52-54-01-77-77-01.v7.cloud.suse.de: 
+            devices: 
+            - ""
+      per_node: 
+        nodes: 
+          d52-54-02-77-77-02.v7.cloud.suse.de: 
+            params: ""
+          d52-54-03-77-77-03.v7.cloud.suse.de: 
+            params: ""
+          d52-54-01-77-77-01.v7.cloud.suse.de: 
+            params: ""
+  deployment: 
+    elements: 
+      hawk-server: 
+      - d52-54-01-77-77-01.v7.cloud.suse.de
+      - d52-54-02-77-77-02.v7.cloud.suse.de
+      - d52-54-03-77-77-03.v7.cloud.suse.de
+      pacemaker-cluster-member: 
+      - d52-54-01-77-77-01.v7.cloud.suse.de
+      - d52-54-02-77-77-02.v7.cloud.suse.de
+      - d52-54-03-77-77-03.v7.cloud.suse.de
+- barclamp: database
+  attributes:
+  deployment: 
+    elements: 
+      database-server: 
+      - d52-54-04-77-77-04.v7.cloud.suse.de
+- barclamp: rabbitmq
+  attributes: 
+    trove: 
+      password: 3SzWijEnJJOp
+    password: ZaCREOrYbt9X
+  deployment: 
+    elements: 
+      rabbitmq-server: 
+      - d52-54-04-77-77-04.v7.cloud.suse.de
+- barclamp: keystone
+  attributes: 
+    rabbitmq_instance: default
+    service: 
+      token: aLGuslp9ET8e
+    db: 
+      password: 3e7vbm5dX7b0
+    database_instance: default
+  deployment: 
+    elements: 
+      keystone-server: 
+      - cluster:cluster
+- barclamp: glance
+  attributes: 
+    db: 
+      password: EQfdpKgfJMzu
+    database_instance: default
+    service_password: VrAwCIw4lmoC
+    rabbitmq_instance: default
+    keystone_instance: default
+  deployment: 
+    elements: 
+      glance-server: 
+      - cluster:cluster
+- barclamp: cinder
+  attributes: 
+    glance_instance: default
+    db: 
+      password: uXxqqmjfIL2G
+    rabbitmq_instance: default
+    keystone_instance: default
+    database_instance: default
+    service_password: iXEi6fZUasti
+    volumes: 
+    - backend_name: cinder-backend
+      backend_driver: local
+      local: 
+        volume_name: cinder-volumes
+        file_size: 2000
+        file_name: /var/lib/cinder/volume.raw
+  deployment: 
+    elements: 
+      cinder-volume: 
+      - d52-54-04-77-77-04.v7.cloud.suse.de
+      cinder-controller: 
+      - cluster:cluster
+- barclamp: neutron
+  attributes: 
+    service_password: R21wnGM6UX4X
+    database_instance: default
+    db: 
+      password: 1Ye4w6UDsvDu
+    rabbitmq_instance: default
+    keystone_instance: default
+  deployment: 
+    elements: 
+      neutron-server: 
+      - cluster:cluster
+      neutron-l3: 
+      - d52-54-04-77-77-04.v7.cloud.suse.de
+- barclamp: nova
+  attributes: 
+    neutron_instance: default
+    keystone_instance: default
+    db: 
+      password: CkLkvVF9nNKm
+    rabbitmq_instance: default
+    service_password: mrZia7cea9C3
+    database_instance: default
+    cinder_instance: default
+    neutron_metadata_proxy_shared_secret: GZkvFkUqCX8u
+    glance_instance: default
+  deployment: 
+    elements: 
+      nova-multi-compute-qemu: []
+  
+      nova-multi-compute-hyperv: []
+  
+      nova-multi-controller: 
+      - cluster:cluster
+      nova-multi-compute-kvm: 
+      - d52-54-05-77-77-05.v7.cloud.suse.de
+      - d52-54-06-77-77-06.v7.cloud.suse.de
+      nova-multi-compute-xen: []
+- barclamp: nova_dashboard
+  attributes:
+    database_instance: default
+    keystone_instance: default
+    nova_instance: default
+    db:
+      password: tWHc3MqFaQ0V
+  deployment:
+    elements:
+      nova_dashboard-server:
+      - cluster:cluster
+- barclamp: heat
+  attributes:
+    database_instance: default
+    keystone_instance: default
+    stack_domain_admin_password: QB7RPy1fMPrF
+    auth_encryption_key: kjzPo4HToOkT1XwCPqld3WYZJhRwqrPTlsjR
+    db:
+      password: BLCYufc8xLYp
+    service_password: gaO7RZPIcG7V
+    rabbitmq_instance: default
+  deployment:
+    elements:
+      heat-server:
+      - cluster:cluster
+- barclamp: ceilometer
+  attributes:
+    database_instance: default
+    keystone_instance: default
+    metering_secret: w32B6QK3Mrwj
+    db:
+      password: 73vp9kdGccyr
+    service_password: g75DOXgtTrue
+    rabbitmq_instance: default
+  deployment:
+    elements:
+      ceilometer-agent:
+      - d52-54-05-77-77-05.v7.cloud.suse.de
+      - d52-54-06-77-77-06.v7.cloud.suse.de
+      ceilometer-server:
+      - luster:cluster
+      ceilometer-swift-proxy-middleware: []
+
+      ceilometer-cagent:
+      - cluster:cluster
+- barclamp: trove
+  attributes:
+    keystone_instance: default
+    cinder_instance: default
+    nova_instance: default
+    db:
+      password: Nj1t50XGzzvm
+    rabbitmq_instance: default
+  deployment:
+    elements:
+      trove-server:
+      - cluster:cluster
