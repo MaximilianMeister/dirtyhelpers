@@ -75,28 +75,6 @@ proposals:
     elements: 
       glance-server: 
       - cluster:cluster
-- barclamp: cinder
-  attributes: 
-    glance_instance: default
-    db: 
-      password: uXxqqmjfIL2G
-    rabbitmq_instance: default
-    keystone_instance: default
-    database_instance: default
-    service_password: iXEi6fZUasti
-    volumes: 
-    - backend_name: cinder-backend
-      backend_driver: local
-      local: 
-        volume_name: cinder-volumes
-        file_size: 2000
-        file_name: /var/lib/cinder/volume.raw
-  deployment: 
-    elements: 
-      cinder-volume: 
-      - d52-54-04-77-77-04.v7.cloud.suse.de
-      cinder-controller: 
-      - cluster:cluster
 - barclamp: neutron
   attributes: 
     service_password: R21wnGM6UX4X
