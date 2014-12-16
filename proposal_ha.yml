@@ -9,29 +9,29 @@ proposals:
 - barclamp: database
   deployment: 
     elements: 
-      database-server: 
+      database-server: []
 - barclamp: rabbitmq
   deployment: 
     elements: 
-      rabbitmq-server: 
+      rabbitmq-server: []
 - barclamp: keystone
   deployment: 
     elements: 
-      keystone-server: 
+      keystone-server: []
 - barclamp: glance
   deployment: 
     elements: 
-      glance-server: 
+      glance-server: []
 - barclamp: cinder
   deployment: 
     elements: 
-      cinder-volume: 
-      cinder-controller: 
+      cinder-volume: []
+      cinder-controller: []
 - barclamp: neutron
   deployment: 
     elements: 
-      neutron-server: 
-      neutron-l3: 
+      neutron-server: []
+      neutron-l3: []
 - barclamp: nova
   deployment: 
     elements: 
@@ -43,19 +43,19 @@ proposals:
 - barclamp: nova_dashboard
   deployment:
     elements:
-      nova_dashboard-server:
+      nova_dashboard-server: []
 - barclamp: heat
   deployment:
     elements:
-      heat-server:
+      heat-server: []
 - barclamp: ceilometer
   deployment:
     elements:
       ceilometer-agent: []
-      ceilometer-server:
+      ceilometer-server: []
       ceilometer-swift-proxy-middleware: []
-      ceilometer-cagent:
+      ceilometer-cagent: []
 - barclamp: trove
   deployment:
     elements:
-      trove-server:
+      trove-server: []
