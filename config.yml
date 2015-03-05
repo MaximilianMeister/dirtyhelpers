@@ -1,0 +1,94 @@
+---
+debug: 
+title: SUSE Cloud Team
+theme: readable
+port: 80
+bugzilla:
+  url: https://bugzilla.novell.com
+products:
+  cloud:
+    versions:
+    - SUSE Cloud 3
+    - SUSE Cloud 4
+    - SUSE Cloud 5
+    - SUSE OpenStack Cloud 6
+    organization: crowbar
+    repos:
+    - crowbar
+    - barclamp-crowbar
+    - barclamp-deployer
+    - barclamp-dns
+    - barclamp-ganglia
+    - barclamp-ipmi
+    - barclamp-logging
+    - barclamp-nagios
+    - barclamp-network
+    - barclamp-ntp
+    - barclamp-provisioner
+    - barclamp-redhat-install
+    - barclamp-test
+    - barclamp-ubuntu-install
+    - barclamp-glance
+    - barclamp-nova
+    - barclamp-swift
+    - barclamp-keystone
+    - barclamp-mysql
+    - barclamp-kong
+    - barclamp-nova_dashboard
+    - barclamp-openstack
+    - barclamp-hadoop
+    - barclamp-hive
+    - barclamp-pig
+    - barclamp-zookeeper
+    - barclamp-sqoop
+    - barclamp-quantum
+    - barclamp-clouderamanager
+    - barclamp-ApacheHadoop
+    - barclamp-postgresql
+    - barclamp-tempest
+    - barclamp-database
+    - barclamp-git
+    - barclamp-cinder
+    - barclamp-dell_bios
+    - barclamp-dell_raid
+    - barclamp-chef
+    - crowbar.github.com
+    - crowbar-utils
+    - ci-tracking
+    - barclamp-example
+    - travis-ci-crowbar
+    - barclamp-loadbalancer
+    - barclamp-ceilometer
+    - barclamp-rabbitmq
+    - raw.crowbar.github.com
+    - barclamp-inteltxt
+    - barclamp-cisco-ucs
+    - barclamp-heat
+    - barclamp-openstack-titanium-block-storage
+    - barclamp-openstack-titanium-compute
+    - barclamp-openstack-titanium-identity
+    - barclamp-openstack-titanium-object-storage
+    - barclamp-openstack-titanium-dashboard
+    - barclamp-openstack-titanium-image
+    - barclamp-openstack-titanium-network
+    - barclamp-openstack-titanium-database
+    - barclamp-openstack-titanium-messaging
+    - barclamp-openstack-titanium-loadbalancer
+    - barclamp-openstack-titanium-base
+    - barclamp-neutron
+    - barclamp-hadoop_infrastructure
+    - barclamp-ceph
+    - barclamp-pacemaker
+    - barclamp-trove
+    - barclamp-messaging
+    - barclamp-hyperv-compute
+    - barclamp-updater
+    - barclamp-suse-manager-client
+    - barclamp-nfs_client
+    - barclamp-raid
+    - barclamp-bios
+    - wsman
+  cloud-tools:
+    organization: SUSE-Cloud
+    repos:
+    - automation
