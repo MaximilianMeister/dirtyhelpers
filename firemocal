@@ -1,0 +1,11 @@
+#!/bin/bash
+
+host=$1
+port=$2
+
+if [[ ! $1 || ! $2 ]] ; then
+  echo "usage: firemocal host port"
+  exit 1
+fi
+
+ssh -X $host firefox -no-remote 127.0.0.1:$port
