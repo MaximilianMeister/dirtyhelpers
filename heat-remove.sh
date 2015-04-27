@@ -10,5 +10,5 @@ knife cookbook upload -o /opt/dell/chef/cookbooks/ heat
 curl https://github.com/MaximilianMeister/barclamp-deployer/commit/d7446a8d60c8114e56206538f48c787515bfa2d7.diff | patch -p1
 knife cookbook upload -o /opt/dell/chef/cookbooks/ barclamp
 
-curl https://github.com/MaximilianMeister/barclamp-crowbar/commit/254fb279dcb5f721b0d48dadfe438ce248cc1553.diff | patch -p1
+curl https://patch-diff.githubusercontent.com/raw/crowbar/barclamp-crowbar/pull/1224.diff | patch -p1
 rccrowbar restart
